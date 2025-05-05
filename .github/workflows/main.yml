@@ -1,11 +1,12 @@
-name: Print My name
+name: Print My Name
+
 on:
   workflow_dispatch:
     inputs:
       username:
-      description: 'enter ur name'
-      required: true
-      default: 'Payel'
+        description: 'Enter your name'
+        required: true
+        default: 'Payel'
 
 jobs:
   build:
@@ -13,4 +14,3 @@ jobs:
     steps:
       - name: Print Name
         run: echo "Hello, my name is ${{ github.event.inputs.username }}"
-        
