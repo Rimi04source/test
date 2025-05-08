@@ -1,0 +1,41 @@
+name: Download and Commit Template
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download_template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download template from Azure DevOps
+        run: |
+          mkdir -p .github/workflows/template
+          curl -u :${{ secrets.AZURE_DEVOPS_TOKEN }} \
+            -H "Accept: application/octet-stream" \
+            -L \
+            "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
+            -o .github/workflows/template/name.yml
+
+      - name: Commit downloaded template
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          # Only commit if there are changes
+          if [[ -n $(git status --porcelain) ]]; then
+            git add .github/workflows/template/name.yml
+            git commit -m "Auto-update: downloaded template from Azure DevOps"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Trigger template-execution workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: trigger-template-execution
