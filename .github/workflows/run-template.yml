@@ -1,0 +1,11 @@
+name: Run Downloaded Template
+
+on:
+  repository_dispatch:
+    types: [trigger-template-execution]
+
+jobs:
+  run_template:
+    uses: ./.github/workflows/template/name.yml
+    with:
+      username: "Payel"
