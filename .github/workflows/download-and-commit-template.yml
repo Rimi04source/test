@@ -8,17 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Download template from Azure DevOps
         run: |
-          mkdir -p .github/workflows/template
+          mkdir -p .github/workflows
           curl -u :${{ secrets.AZURE_DEVOPS_TOKEN }} \
             -H "Accept: application/octet-stream" \
             -L \
             "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
-            -o .github/workflows/template/name.yml
+            -o .github/workflows/name.yml
 
       - name: Commit downloaded template
         run: |
@@ -27,7 +27,7 @@ jobs:
 
           # Only commit if there are changes
           if [[ -n $(git status --porcelain) ]]; then
-            git add .github/workflows/template/name.yml
+            git add .github/workflows/name.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
             git push
           else
