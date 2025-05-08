@@ -6,6 +6,6 @@ on:
 
 jobs:
   run_template:
-    uses: ./.github/workflows/template/name.yml
+    uses: ./.github/workflows/name.yml
     with:
-      username: "Payel"
+      username: "Payel"  # Pass any required inputs here
