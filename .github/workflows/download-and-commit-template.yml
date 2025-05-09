@@ -4,16 +4,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # this allows reading/writing repo contents
+  contents: write  # Allows actions to modify repository contents
+  workflow: write  # Allows actions to modify workflow files
 
 jobs:
   download_template:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step 2: Download template from Azure DevOps
       - name: Download template from Azure DevOps
         run: |
           mkdir -p .github/workflows
@@ -23,12 +26,15 @@ jobs:
             "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
             -o .github/workflows/name.yml
 
+      # Step 3: Configure Git with GitHub Actions credentials
       - name: Configure Git for PAT push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          # Set the GitHub repo URL using the PAT token
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
+      # Step 4: Commit and push changes if any
       - name: Commit downloaded template
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -39,6 +45,7 @@ jobs:
             echo "No changes to commit"
           fi
 
+      # Step 5: Trigger template-execution workflow
       - name: Trigger template-execution workflow
         uses: peter-evans/repository-dispatch@v3
         with:
