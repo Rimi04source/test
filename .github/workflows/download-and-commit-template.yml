@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write  # Allows actions to modify repository contents
 
 jobs:
   download_template:
@@ -14,23 +14,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Show initial Git status and config (debug)
+        run: |
+          echo "===> Initial git remote:"
+          git remote -v
+          echo "===> Initial git status:"
+          git status
+          echo "===> Initial git config:"
+          git config --list
+
       - name: Download template from Azure DevOps
         run: |
           mkdir -p .github/workflows
-          curl -u :${{ secrets.AZURE_DEVOPS_TOKEN }} \
+          curl -v -u :${{ secrets.AZURE_DEVOPS_TOKEN }} \
             -H "Accept: application/octet-stream" \
             -L \
             "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
             -o .github/workflows/name.yml
-
-      - name: Debug info
-        run: |
-          echo "Git remote:"
-          git remote -v
-          echo "Git status:"
-          git status
-          echo "Git config:"
-          git config --list
 
       - name: Configure Git for PAT push
         run: |
@@ -38,18 +38,31 @@ jobs:
           git config user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
 
+      - name: Show git status after download (debug)
+        run: |
+          echo "===> Git remote after reconfig:"
+          git remote -v
+          echo "===> Git status after download:"
+          git status
+
       - name: Commit downloaded template
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             git add .github/workflows/name.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
+            echo "===> Attempting push with PAT_TOKEN"
             git push origin HEAD:main
           else
-            echo "No changes to commit"
+            echo "===> No changes to commit"
           fi
+
+      - name: Show git log after commit (debug)
+        run: |
+          echo "===> Last 3 git commits"
+          git log -3 --oneline
 
       - name: Trigger template-execution workflow
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           event-type: trigger-template-execution
