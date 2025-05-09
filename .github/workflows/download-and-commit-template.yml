@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # Allows actions to modify repository contents
+  contents: write  
 
 jobs:
   download_template:
