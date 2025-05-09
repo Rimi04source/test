@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write      # allow committing files
-  workflows: write     # allow modifying workflows (.github/workflows/*.yml)
+  contents: write  # ✅ enables push, including workflows
 
 jobs:
   download_template:
