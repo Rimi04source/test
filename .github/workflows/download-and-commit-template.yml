@@ -5,7 +5,6 @@ on:
 
 permissions:
   contents: write  # this allows reading/writing repo contents
-  workflows: write # this allows modifying workflow files
 
 jobs:
   download_template:
