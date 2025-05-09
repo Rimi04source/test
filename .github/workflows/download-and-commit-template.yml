@@ -3,13 +3,13 @@ name: Download and Commit Template
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write  # Allows actions to modify repository contents
-  workflow: write  # Allows actions to modify workflow files
-
 jobs:
   download_template:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Allows actions to modify repository contents
+      workflow: write  # Allows actions to modify workflow files
 
     steps:
       # Step 1: Checkout repository
@@ -26,7 +26,7 @@ jobs:
             "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
             -o .github/workflows/name.yml
 
-      # Step 3: Configure Git with GitHub Actions credentials
+      # Step 3: Configure Git for PAT push
       - name: Configure Git for PAT push
         run: |
           git config user.name "github-actions"
