@@ -27,8 +27,8 @@ jobs:
 
       - name: Download template from Azure DevOps
         run: |
-          # Simulate template download (replace with your actual curl or script)
-          echo "# Example workflow" > .github/workflows/name.yml
+          # IMPORTANT: Write to a NEW file, not the running workflow!
+          echo "# Example workflow" > .github/workflows/downloaded-template.yml
 
       - name: Debug: Git status after download
         run: git status
@@ -38,7 +38,7 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           if [[ -n $(git status --porcelain) ]]; then
-            git add .github/workflows/name.yml
+            git add .github/workflows/downloaded-template.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
             echo "===> Attempting push with PAT_TOKEN"
             git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
