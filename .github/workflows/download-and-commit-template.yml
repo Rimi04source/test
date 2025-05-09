@@ -1,15 +1,15 @@
 name: Download and Commit Template
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Triggered manually via the GitHub UI
 
 jobs:
   download_template:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Runs on the latest Ubuntu runner
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Checks out the repository
 
       - name: Set up Git config
         run: |
@@ -27,8 +27,8 @@ jobs:
 
       - name: Download template from Azure DevOps
         run: |
-          # IMPORTANT: Write to a NEW file, not the running workflow!
-          echo "# Example workflow" > .github/workflows/downloaded-template.yml
+          # Simulate template download (replace with actual curl or script)
+          echo "# Example workflow" > .github/workflows/name.yml
 
       - name: Debug: Git status after download
         run: git status
@@ -38,7 +38,7 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           if [[ -n $(git status --porcelain) ]]; then
-            git add .github/workflows/downloaded-template.yml
+            git add .github/workflows/name.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
             echo "===> Attempting push with PAT_TOKEN"
             git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
