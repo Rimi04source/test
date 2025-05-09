@@ -3,9 +3,10 @@ name: Download and Commit Template
 on:
   workflow_dispatch:
 
+# Set the permissions at the top level of the workflow file
 permissions:
-  contents: write  # Allows actions to modify repository contents
-  workflow: write  # Allows actions to modify workflow files
+  contents: write  # Grants permissions to modify repository contents
+  # Remove 'workflow' permission as it's not needed here and causing the error
 
 jobs:
   download_template:
