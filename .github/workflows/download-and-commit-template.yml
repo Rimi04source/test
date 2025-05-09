@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # ✅ enables push, including workflows
+  contents: write  # Needed for checkout and general repo actions
 
 jobs:
   download_template:
@@ -27,7 +27,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
           if [[ -n $(git status --porcelain) ]]; then
             git add .github/workflows/name.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
