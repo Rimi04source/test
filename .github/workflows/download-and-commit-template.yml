@@ -3,10 +3,8 @@ name: Download and Commit Template
 on:
   workflow_dispatch:
 
-# Set the permissions at the top level of the workflow file
 permissions:
-  contents: write  # Grants permissions to modify repository contents
-  # Remove 'workflow' permission as it's not needed here and causing the error
+  contents: write  # Allows actions to modify repository contents
 
 jobs:
   download_template:
@@ -29,8 +27,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          # Use the GitHub Token to push changes
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+          # Setting the remote URL with the PAT directly
+          git remote set-url origin https://$PAT_TOKEN@github.com/${{ github.repository }}
 
       - name: Commit downloaded template
         run: |
