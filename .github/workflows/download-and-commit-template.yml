@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # Needed for checkout and general repo actions
+  contents: write  # this allows reading/writing repo contents
+  workflows: write # this allows modifying workflow files
 
 jobs:
   download_template:
@@ -23,15 +24,18 @@ jobs:
             "https://dev.azure.com/senarindam/Payel%20Bose/_apis/git/repositories/Jfrog/items?path=/github/workflows/name.yml&api-version=7.0" \
             -o .github/workflows/name.yml
 
-      - name: Commit downloaded template
+      - name: Configure Git for PAT push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Commit downloaded template
+        run: |
           if [[ -n $(git status --porcelain) ]]; then
             git add .github/workflows/name.yml
             git commit -m "Auto-update: downloaded template from Azure DevOps"
-            git push
+            git push origin HEAD:main
           else
             echo "No changes to commit"
           fi
